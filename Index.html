@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logistar Social Campaign — MVP Content Hub</title>
+    <style>
+        :root {
+            --primary: #0a1628;
+            --accent: #00d4aa;
+            --accent-dark: #00b894;
+            --surface: #0f1f38;
+            --surface-light: #162a4a;
+            --text: #e8edf5;
+            --text-muted: #8899b3;
+            --danger: #ff6b6b;
+            --warning: #ffc048;
+            --success: #00d4aa;
+            --border: rgba(255,255,255,0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+            background: var(--primary);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* ===== NAVIGATION ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 22, 40, 0.92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            padding: 0 2rem;
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span { color: var(--accent); }
+
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: var(--accent); }
+
+        /* ===== HERO ===== */
+        .hero {
+            padding: 140px 2rem 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 50% 0%, rgba(0,212,170,0.06) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(0,212,170,0.1);
+            border: 1px solid rgba(0,212,170,0.25);
+            color: var(--accent);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.2rem, 5vw, 3.8rem);
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            line-height: 1.15;
+            margin-bottom: 1.5rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero h1 em {
+            font-style: normal;
+            color: var(--accent);
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            max-width: 640px;
+            margin: 0 auto 2rem;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat .number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: -1px;
+        }
+
+        .hero-stat .label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        /* ===== SECTIONS ===== */
+        section {
+            padding: 80px 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            color: var(--accent);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 1rem;
+        }
+
+        .section-desc {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            max-width: 700px;
+            margin-bottom: 3rem;
+        }
+
+        /* ===== KPI GRID ===== */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 4rem;
+        }
+
+        .kpi-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(0,212,170,0.3);
+        }
+
+        .kpi-card .kpi-label {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-card .kpi-value {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .kpi-card .kpi-target {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .kpi-accent { color: var(--accent); }
+        .kpi-warning { color: var(--warning); }
+        .kpi-danger { color: var(--danger); }
+
+        /* ===== PERSONA CARDS ===== */
+        .persona-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .persona-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .persona-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .persona-card:nth-child(1)::before { background: var(--accent); }
+        .persona-card:nth-child(2)::before { background: var(--warning); }
+        .persona-card:nth-child(3)::before { background: #a29bfe; }
+
+        .persona-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .persona-card:nth-child(1) .persona-avatar { background: rgba(0,212,170,0.15); color: var(--accent); }
+        .persona-card:nth-child(2) .persona-avatar { background: rgba(255,192,72,0.15); color: var(--warning); }
+        .persona-card:nth-child(3) .persona-avatar { background: rgba(162,155,254,0.15); color: #a29bfe; }
+
+        .persona-name {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .persona-role {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .persona-detail {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            padding-left: 1rem;
+            border-left: 2px solid var(--border);
+        }
+
+        .persona-trigger {
+            margin-top: 1rem;
+            padding: 0.75rem 1rem;
+            background: rgba(255,107,107,0.08);
+            border: 1px solid rgba(255,107,107,0.2);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            color: var(--danger);
+        }
+
+        .persona-trigger strong { color: var(--danger); }
+
+        /* ===== PILLAR CARDS ===== */
+        .pillar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .pillar-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.75rem;
+            transition: transform 0.2s;
+        }
+
+        .pillar-card:hover { transform: translateY(-3px); }
+
+        .pillar-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .pillar-card:nth-child(1) .pillar-icon { background: rgba(0,212,170,0.12); }
+        .pillar-card:nth-child(2) .pillar-icon { background: rgba(108,92,231,0.12); }
+        .pillar-card:nth-child(3) .pillar-icon { background: rgba(255,192,72,0.12); }
+        .pillar-card:nth-child(4) .pillar-icon { background: rgba(255,107,107,0.12); }
+
+        .pillar-card h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .pillar-card p {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* ===== CONTENT POSTS ===== */
+        .posts-timeline {
+            position: relative;
+        }
+
+        .posts-timeline::before {
+            content: '';
+            position: absolute;
+            left: 28px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--accent), rgba(0,212,170,0.1));
+        }
+
+        .post-item {
+            position: relative;
+            padding-left: 72px;
+            margin-bottom: 2.5rem;
+        }
+
+        .post-dot {
+            position: absolute;
+            left: 20px;
+            top: 8px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 3px solid var(--accent);
+            z-index: 1;
+        }
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .post-day {
+            background: rgba(0,212,170,0.12);
+            color: var(--accent);
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .post-pillar {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: var(--surface-light);
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .post-type {
+            font-size: 0.72rem;
+            color: var(--warning);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .post-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+
+        .post-card:hover {
+            border-color: rgba(0,212,170,0.25);
+        }
+
+        .post-header {
+            padding: 1.5rem 1.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .post-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.9rem;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .post-author-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .post-author-title {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .post-platform {
+            margin-left: auto;
+            font-size: 0.75rem;
+            background: var(--surface-light);
+            padding: 4px 10px;
+            border-radius: 6px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .post-body {
+            padding: 1.25rem 1.5rem;
+        }
+
+        .post-content {
+            font-size: 0.92rem;
+            line-height: 1.75;
+            color: var(--text);
+            white-space: pre-wrap;
+            max-height: 320px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .post-content.expanded {
+            max-height: none;
+        }
+
+        .post-fade {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(transparent, var(--surface));
+            pointer-events: none;
+        }
+
+        .post-content.expanded .post-fade {
+            display: none;
+        }
+
+        .post-toggle {
+            background: none;
+            border: none;
+            color: var(--accent);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0.5rem 1.5rem 1.25rem;
+            display: block;
+        }
+
+        .post-toggle:hover { text-decoration: underline; }
+
+        .post-footer {
+            padding: 0.75rem 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .post-action {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .post-cta-badge {
+            display: inline-block;
+            margin-top: 1rem;
+            background: rgba(0,212,170,0.1);
+            border: 1px solid rgba(0,212,170,0.3);
+            color: var(--accent);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        /* ===== TIMELINE / CALENDAR ===== */
+        .calendar-bar {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .cal-day {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: default;
+            transition: transform 0.15s;
+        }
+
+        .cal-day:hover { transform: scale(1.15); }
+
+        .cal-day.awareness { background: rgba(0,212,170,0.2); color: var(--accent); }
+        .cal-day.consideration { background: rgba(255,192,72,0.2); color: var(--warning); }
+        .cal-day.conversion { background: rgba(255,107,107,0.2); color: var(--danger); }
+
+        .cal-legend {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .cal-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .cal-legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 4px;
+        }
+
+        /* ===== CONVERSION FLOW ===== */
+        .flow-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .flow-step {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .flow-step .step-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(0,212,170,0.15);
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 800;
+            margin: 0 auto 0.75rem;
+        }
+
+        .flow-step h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+
+        .flow-step p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero { padding: 120px 1.25rem 60px; }
+            .hero-stats { gap: 1.5rem; }
+            section { padding: 50px 1.25rem; }
+            .posts-timeline::before { left: 14px; }
+            .post-item { padding-left: 48px; }
+            .post-dot { left: 6px; }
+            .post-header { flex-wrap: wrap; }
+            .post-platform { margin-left: 0; }
+        }
+
+        /* ===== TAB SYSTEM ===== */
+        .tab-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: rgba(0,212,170,0.12);
+            border-color: rgba(0,212,170,0.4);
+            color: var(--accent);
+        }
+
+        .tab-btn:hover:not(.active) {
+            border-color: rgba(255,255,255,0.15);
+            color: var(--text);
+        }
+
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+    </style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+    <div class="nav-inner">
+        <div class="logo">LOGI<span>STAR</span> <span style="font-weight:400;font-size:0.8rem;color:var(--text-muted)">Campaign Hub</span></div>
+        <ul class="nav-links">
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#kpis">KPIs</a></li>
+            <li><a href="#personas">Personas</a></li>
+            <li><a href="#pillars">Pillars</a></li>
+            <li><a href="#content">Content</a></li>
+            <li><a href="#funnel">Funnel</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+    <div class="hero-badge">MVP Sprint — 7-Day Content Launch</div>
+    <h1>Logistar Social Campaign<br><em>Content Command Center</em></h1>
+    <p>7篇LinkedIn文案 × 2大核心支柱 × 1个转化引擎<br>为月发1,000-5,000单的Shopify品牌构建有机获客系统</p>
+    <div class="hero-stats">
+        <div class="hero-stat">
+            <div class="number">7</div>
+            <div class="label">LinkedIn Posts</div>
+        </div>
+        <div class="hero-stat">
+            <div class="number">2</div>
+            <div class="label">Core Pillars</div>
+        </div>
+        <div class="hero-stat">
+            <div class="number">5+</div>
+            <div class="label">Target Inquiries</div>
+        </div>
+        <div class="hero-stat">
+            <div class="number">10</div>
+            <div class="label">Day Sprint</div>
+        </div>
+    </div>
+</header>
+
+<!-- OVERVIEW -->
+<section id="overview">
+    <div class="section-label">Campaign Overview</div>
+    <h2 class="section-title">MVP策略概要</h2>
+    <p class="section-desc">从完整30天PRD中提炼出最小可验证闭环：一个平台（LinkedIn）、两个支柱（定价透明 + 地理优势）、一个核心CTA（DM AUDIT），7-10天验证内容能否驱动合格商业询盘。</p>
+
+    <div class="pillar-grid" style="margin-bottom:2rem;">
+        <div class="pillar-card">
+            <div class="pillar-icon">🎯</div>
+            <h3>核心假设</h3>
+            <p>Logistar的内容能在mid-market Shopify品牌决策者中引发真实的商业对话，并以低于outbound sales的成本产生合格inbound询盘。</p>
+        </div>
+        <div class="pillar-card">
+            <div class="pillar-icon">⚡</div>
+            <h3>MVP范围</h3>
+            <p>仅LinkedIn平台 → 仅2个内容支柱（Pricing Transparency + NJ Geographic Advantage）→ 仅2个转化机制（DM AUDIT + Calendar Booking）→ 7篇帖子</p>
+        </div>
+        <div class="pillar-card">
+            <div class="pillar-icon">📏</div>
+            <h3>成功标准</h3>
+            <p>7-10天内：5+个DM/预约询盘、2-3条来自目标受众的痛点评论、识别出哪个钩子（价格 vs 地理）更有效。</p>
+        </div>
+        <div class="pillar-card">
+            <div class="pillar-icon">🔄</div>
+            <h3>迭代计划</h3>
+            <p>MVP验证成功后，按完整PRD铺开30天日历，加入X平台、扩展至全部4个内容支柱，并启动付费放大。</p>
+        </div>
+    </div>
+</section>
+
+<!-- KPIs -->
+<section id="kpis">
+    <div class="section-label">Key Performance Indicators</div>
+    <h2 class="section-title">MVP阶段核心指标</h2>
+    <p class="section-desc">MVP只追踪最关键的验证指标，而非完整KPI框架。</p>
+
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-label">DM / 预约询盘</div>
+            <div class="kpi-value kpi-accent">5+</div>
+            <div class="kpi-target">7-10天内目标</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">目标受众痛点评论</div>
+            <div class="kpi-value kpi-warning">2-3</div>
+            <div class="kpi-target">来自ICP的实质性评论</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">帖子平均互动率</div>
+            <div class="kpi-value kpi-accent">4%+</div>
+            <div class="kpi-target">LinkedIn B2B avg: 2-3%</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Profile Views增长</div>
+            <div class="kpi-value kpi-warning">200%</div>
+            <div class="kpi-target">vs trailing 7-day baseline</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Carousel完成率</div>
+            <div class="kpi-value kpi-accent">40%+</div>
+            <div class="kpi-target">Post 7 PDF Carousel</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">CTA点击率</div>
+            <div class="kpi-value kpi-accent">1.5%+</div>
+            <div class="kpi-target">CTA-bearing posts</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">发票审计请求</div>
+            <div class="kpi-value kpi-danger">3+</div>
+            <div class="kpi-target">"DM AUDIT" responses</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">最优支柱识别</div>
+            <div class="kpi-value" style="font-size:1.1rem;">Price vs Geo</div>
+            <div class="kpi-target">哪个主题表现更好</div>
+        </div>
+    </div>
+</section>
+
+<!-- PERSONAS -->
+<section id="personas">
+    <div class="section-label">Target Audience</div>
+    <h2 class="section-title">三大目标Persona</h2>
+    <p class="section-desc">内容为这三类决策者量身设计——每篇帖子至少触达其中1-2个persona的核心痛点。</p>
+
+    <div class="persona-grid">
+        <div class="persona-card">
+            <div class="persona-avatar">J</div>
+            <div class="persona-name">Jordan — "The Scaling Founder"</div>
+            <div class="persona-role">CEO & Founder · DTC Wellness Brand</div>
+            <div class="persona-detail">月均 ~3,500单 · 物流支出 ~$14,000/月</div>
+            <div class="persona-detail">18个月前以$3.50/单签约，实际发票高出40-60%</div>
+            <div class="persona-detail">核心痛点：不可预测的物流成本摧毁了财务预测和广告预算</div>
+            <div class="persona-trigger"><strong>购买触发点：</strong>当月发票偏差超过40%，信任彻底崩塌，立即寻找替代方案</div>
+        </div>
+        <div class="persona-card">
+            <div class="persona-avatar">P</div>
+            <div class="persona-name">Priya — "The Ops Manager Under Fire"</div>
+            <div class="persona-role">Director of Operations · Fashion & Accessories</div>
+            <div class="persona-detail">月均 ~4,200单 · 物流支出 ~$18,000/月</div>
+            <div class="persona-detail">Batch sync导致Black Friday超卖340单，dock-to-stock延迟5+天</div>
+            <div class="persona-detail">核心痛点：错误率>2%，花大量时间处理客服升级而非战略改进</div>
+            <div class="persona-trigger"><strong>购买触发点：</strong>准确率和速度SLA持续未达标，客户经理开始ghosting</div>
+        </div>
+        <div class="persona-card">
+            <div class="persona-avatar">M</div>
+            <div class="persona-name">Marcus — "The Growth-Obsessed E-com Director"</div>
+            <div class="persona-role">VP of E-commerce · Home Goods Brand</div>
+            <div class="persona-detail">月均 ~4,800单 · 物流支出 ~$20,000/月</div>
+            <div class="persona-detail">"5-7天到货"的checkout页面购物车放弃率高22%</div>
+            <div class="persona-detail">核心痛点：中西部仓库强制Zone 4-5运费，次日达经济上不可行</div>
+            <div class="persona-trigger"><strong>购买触发点：</strong>大型促销活动3PL产能不足，导致大规模延迟和品牌损伤</div>
+        </div>
+    </div>
+</section>
+
+<!-- PILLARS -->
+<section id="pillars">
+    <div class="section-label">Messaging Architecture</div>
+    <h2 class="section-title">MVP聚焦的2大内容支柱</h2>
+    <p class="section-desc">从PRD的4大支柱中选取最直击"钱袋子"的两个，最大化情绪共鸣和行动转化。</p>
+
+    <div class="pillar-grid">
+        <div class="pillar-card" style="grid-column: span 2;">
+            <div class="pillar-icon">💰</div>
+            <h3>Pillar A: Radical Pricing Transparency</h3>
+            <p>直接攻击3PL隐藏费用——$3.50报价的数学幻觉、dimensional weight adjustments、API fees、long-term storage penalties。核心论点：不透明定价不仅仅是不方便——它是增长的结构性障碍，因为无法准确预测单位经济学的商家不敢放量投广告。</p>
+        </div>
+        <div class="pillar-card" style="grid-column: span 2;">
+            <div class="pillar-icon">📍</div>
+            <h3>Pillar B: New Jersey Geographic Advantage</h3>
+            <p>把物理地址转化为财务论证——Zone 1-3定价覆盖整个东海岸走廊（vs 西海岸Zone 7-8贵40-60%）、1-2天ground触达1亿消费者、港口近距离减少进口transit时间。核心论点：仓库选址不是运营细节，而是直接决定运费、配送速度和转化率的数学杠杆。</p>
+        </div>
+    </div>
+</section>
+
+<!-- 30-DAY CALENDAR VISUALIZATION -->
+<section>
+    <div class="section-label">Content Calendar</div>
+    <h2 class="section-title">7篇帖子 · Buyer's Journey映射</h2>
+    <p class="section-desc">帖子按照"发现问题 → 量化痛苦 → 给出出路"的叙事弧线排列。</p>
+
+    <div class="cal-legend">
+        <div class="cal-legend-item">
+            <div class="cal-legend-dot" style="background:rgba(0,212,170,0.5);"></div>
+            Awareness / Agitation (Post 1-3)
+        </div>
+        <div class="cal-legend-item">
+            <div class="cal-legend-dot" style="background:rgba(255,192,72,0.5);"></div>
+            Education / Authority (Post 4-5)
+        </div>
+        <div class="cal-legend-item">
+            <div class="cal-legend-dot" style="background:rgba(255,107,107,0.5);"></div>
+            Conversion / CTA (Post 6-7)
+        </div>
+    </div>
+
+    <div class="calendar-bar">
+        <div class="cal-day awareness" title="Post 1: 定价幻觉">1</div>
+        <div class="cal-day awareness" title="Post 2: Zone热力图">2</div>
+        <div class="cal-day awareness" title="Post 3: 创始人叙事">3</div>
+        <div class="cal-day" style="background:var(--surface-light);color:var(--text-muted);" title="互动日">4</div>
+        <div class="cal-day consideration" title="Post 4: 统计冲击">5</div>
+        <div class="cal-day consideration" title="Post 5: 东海岸综合">6</div>
+        <div class="cal-day" style="background:var(--surface-light);color:var(--text-muted);" title="互动日">7</div>
+        <div class="cal-day conversion" title="Post 6: 直接CTA">8</div>
+        <div class="cal-day conversion" title="Post 7: Carousel">9</div>
+        <div class="cal-day" style="background:var(--surface-light);color:var(--text-muted);" title="Review & Iterate">10</div>
+    </div>
+</section>
+
+<!-- CONTENT POSTS -->
+<section id="content">
+    <div class="section-label">Content Library</div>
+    <h2 class="section-title">7篇LinkedIn帖子 — 完整文案</h2>
+    <p class="section-desc">点击"展开全文"查看每篇帖子的完整copy。所有帖子以创始人个人账号发布。</p>
+
+    <!-- TAB BAR -->
+    <div class="tab-bar">
+        <button class="tab-btn active" onclick="showTab('all')">全部</button>
+        <button class="tab-btn" onclick="showTab('pricing')">💰 定价透明</button>
+        <button class="tab-btn" onclick="showTab('geo')">📍 地理优势</button>
+        <button class="tab-btn" onclick="showTab('conversion')">🎯 转化型</button>
+    </div>
+
+    <div class="posts-timeline">
+
+        <!-- POST 1 -->
+        <div class="post-item" data-pillar="pricing">
+            <div class="post-dot"></div>
+            <div class="post-meta">
+                <span class="post-day">Day 1</span>
+                <span class="post-pillar">💰 Pricing Transparency</span>
+                <span class="post-type">Agitation</span>
+            </div>
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="post-avatar">LS</div>
+                    <div>
+                        <div class="post-author-name">Logistar Founder</div>
+                        <div class="post-author-title">CEO @ Logistar · Shopify 3PL · New Brunswick, NJ</div>
+                    </div>
+                    <div class="post-platform">LinkedIn</div>
+                </div>
+                <div class="post-body">
+                    <div class="post-content" id="post1">你的3PL报价$3.50/单？实际你在付$6.80。
+
+我审计过上百张3PL发票。几乎每一张都是同一个剧本：
+
+报价单上写着$3.50 pick-and-pack。清清楚楚，很有竞争力。签了合同，头两个月看起来也还行。然后第三个月发票到了，你盯着屏幕，发现总额比你预算高出40%。
+
+你开始翻明细。Dimensional weight adjustment，$0.45/单。Multi-unit pick escalation，$0.60起。API synchronization fee，$0.05-$0.15/单——对，他们连帮你同步Shopify数据都收费。Long-term storage surcharge——2025年的行业调查显示48.6%的仓库现在收这笔钱，比前一年翻了一倍。Returns processing，$3-$8/个退货标签，加上restocking inspection。
+
+加在一起，你的"$3.50/单"变成了$6.80，甚至更高。
+
+这不是个别现象。这是一个商业模式。用一个好看的base rate把你签进来，然后用15行附加费把利润吃掉。对于一个月发4000单的Shopify品牌来说，这意味着每年多付$15万+你根本没预算进去的钱。
+
+你没法在这种基础上做财务预测。你没法在这种基础上放心加大广告投放。你被困住了。
+
+我们做了一件很简单的事：把定价模型从15行压缩到完全透明的结构。没有dimensional weight surprises。没有API transaction charges。没有藏在细则里的storage penalties。
+
+你知道你每一单的真实成本，所以你可以大胆scaling。
+
+如果你想知道你现在到底在为隐藏费用付多少钱——DM我 "AUDIT"，我们48小时内免费帮你逐行审计你的3PL发票。
+
+<div class="post-cta-badge">CTA: DM "AUDIT" → 48小时免费发票审计</div><div class="post-fade"></div></div>
+                </div>
+                <button class="post-toggle" onclick="togglePost('post1', this)">展开全文 ↓</button>
+                <div class="post-footer">
+                    <div class="post-action">👍 Like</div>
+                    <div class="post-action">💬 Comment</div>
+                    <div class="post-action">🔄 Repost</div>
+                    <div class="post-action">📤 Send</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- POST 2 -->
+        <div class="post-item" data-pillar="geo">
+            <div class="post-dot"></div>
+            <div class="post-meta">
+                <span class="post-day">Day 2</span>
+                <span class="post-pillar">📍 Geographic Advantage</span>
+                <span class="post-type">Data Visualization</span>
+            </div>
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="post-avatar">LS</div>
+                    <div>
+                        <div class="post-author-name">Logistar Founder</div>
+                        <div class="post-author-title">CEO @ Logistar · Shopify 3PL · New Brunswick, NJ</div>
+                    </div>
+                    <div class="post-platform">LinkedIn</div>
+                </div>
+                <div class="post-body">
+                    <div class="post-content" id="post2">你的发货地址，正在决定你每年多花多少运费。
+
+大多数Shopify品牌选3PL的时候，关注的是pick-and-pack单价、准确率、系统对接。这些都重要。但有一个变量被严重低估了——它悄悄决定了你整个物流成本结构的天花板：你的仓库在哪。
+
+主要快递承运商按"Zone"计价：从发货地到收货地的距离越远，zone越高，运费越贵。这不是线性关系——Zone 7-8的费率比Zone 1-3高出40%-60%。
+
+现在看一张地图：美国人口最密集、消费力最强的市场——纽约、波士顿、费城、巴尔的摩、华盛顿DC——全部集中在东海岸。超过1亿消费者。
+
+如果你从西海岸发货到这些市场，每个包裹都在Zone 7-8。如果你从中西部发，Zone 4-5。如果你从新泽西发——Zone 1到Zone 3，ground shipping 1-2天到达。
+
+对一个月发4000单的品牌来说，这个zone差异意味着每年节省数万美元的运费。这些钱直接回到你的bottom line，或者变成你下一轮customer acquisition的弹药。
+
+这就是为什么仓库选址不是一个运营细节——它是一个数学杠杆。
+
+📍 Logistar | New Brunswick, NJ — NJ Turnpike Exit 9旁，纽约/新泽西港短途可达，1-2天ground覆盖1亿+东海岸消费者。
+
+想知道你当前发货地 vs 新泽西发货的zone成本差异？留言你的发货城市，我帮你算。
+
+<div class="post-cta-badge">CTA: 留言发货城市 → 免费Zone成本对比</div><div class="post-fade"></div></div>
+                </div>
+                <button class="post-toggle" onclick="togglePost('post2', this)">展开全文 ↓</button>
+                <div class="post-footer">
+                    <div class="post-action">👍 Like</div>
+                    <div class="post-action">💬 Comment</div>
+                    <div class="post-action">🔄 Repost</div>
+                    <div class="post-action">📤 Send</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- POST 3 -->
+        <div class="post-item" data-pillar="pricing">
+            <div class="post-dot"></div>
+            <div class="post-meta">
+                <span class="post-day">Day 3</span>
+                <span class="post-pillar">💰 Pricing Transparency</span>
+                <span class="post-type">Founder Narrative</span>
+            </div>
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="post-avatar">LS</div>
+                    <div>
+                        <div class="post-author-name">Logistar Founder</div>
+                        <div class="post-author-title">CEO @ Logistar · Shopify 3PL · New Brunswick, NJ</div>
+                    </div>
+                    <div class="post-platform">LinkedIn</div>
+                </div>
+                <div class="post-body">
+                    <div class="post-content" id="post3">"为什么我的发票又比预算高了47%？"
+
+这是我从一个DTC品牌创始人那里听到的，一字不差。
+
+他的品牌做wellness产品，Shopify上月均3500单，每月物流预算$14,000。18个月前签了一家3PL，base rate $3.50/单，看起来数学完美。
+
+然后现实开始侵蚀spreadsheet。
+
+第一个月，发票多了8%。"大概是settling-in period"，他这么告诉自己。第三个月，多了22%。他开始逐行看，发现了dimensional weight adjustment、multi-unit escalation和一笔从没听说过的"platform integration fee"。
+
+到第六个月，每张发票都比预算高40%-60%。他的financial forecasting被彻底摧毁了。更致命的是连锁反应：因为没法准确预测每单的真实成本，他不敢放量投广告。ROAS明明是正的，但他不确定扣完物流成本之后还有没有margin。增长被按了暂停键。
+
+他知道该换了。但恐惧比不满更强大：几千个pallet的库存要物理搬迁、搬迁期间的stockout风险、合同里的90天notice period、以及他怀疑的——一旦提出要走，现有服务水平会立刻崩塌。
+
+这个故事不是个例。我们接触的mid-market Shopify品牌里，超过70%都在经历同样的循环：报价好看→实际账单失控→想走但怕迁移风险→继续忍受。
+
+打破这个循环，从搞清楚你实际在付多少钱开始。
+
+DM我 "AUDIT"——我们的团队48小时内帮你做一份免费的发票逐行诊断，告诉你你每单的真实landed cost到底是多少。没有销售压力，就是一份带数据的报告。
+
+<div class="post-cta-badge">CTA: DM "AUDIT" → 免费发票诊断报告</div><div class="post-fade"></div></div>
+                </div>
+                <button class="post-toggle" onclick="togglePost('post3', this)">展开全文 ↓</button>
+                <div class="post-footer">
+                    <div class="post-action">👍 Like</div>
+                    <div class="post-action">💬 Comment</div>
+                    <div class="post-action">🔄 Repost</div>
+                    <div class="post-action">📤 Send</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- POST 4 -->
+        <div class="post-item" data-pillar="pricing">
+            <div class="post-dot"></div>
+            <div class="post-meta">
+                <span class="post-day">Day 5</span>
+                <span class="post-pillar">💰 Pricing Transparency</span>
+                <span class="post-type">Statistical Teardown</span>
+            </div>
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="post-avatar">LS</div>
+                    <div>
+                        <div class="post-author-name">Logistar Founder</div>
+                        <div class="post-author-title">CEO @ Logistar · Shopify 3PL · New Brunswick, NJ</div>
+                    </div>
+                    <div class="post-platform">LinkedIn</div>
+                </div>
+                <div class="post-body">
+                    <div class="post-content" id="post4">48.6%的仓库现在收长期仓储附加费。一年前这个数字是23.3%。
+
+翻一倍，12个月内。
+
+如果你是一个有季节性SKU的Shopify品牌——holiday collections, limited drops, seasonal variants——这条数据应该让你认真审视一下你的仓储合同。
+
+Long-term storage fees的逻辑是这样的：你的库存在仓库里超过一定天数（通常90-180天），开始按每月每pallet或每cubic foot收取额外费用。这笔费用是叠加在你的常规storage费之上的。
+
+对于做DTC的品牌来说，这几乎是一个结构性陷阱。你必须提前备货来应对促销和旺季，但提前备货就意味着库存在仓库里"aging"。你做了正确的供应链决策，却因此被罚款。
+
+更隐蔽的是，很多3PL在最初签约时根本不提这笔费用，或者把它埋在合同附录的第7页。等你第一次被收取的时候，你的库存已经在那里了，搬走的成本比交罚款还高。
+
+解决方案不只是"找一个不收这笔费用的仓库"——而是找到一个定价模型完全透明、在签约前就把所有可能的费用项清清楚楚列出来的合作伙伴。
+
+6,000 pallet positions。透明的storage定价。没有compounding surcharges。没有buried在细则里的penalties。
+
+想审计一下你目前到底在为哪些隐藏费用买单？DM "AUDIT"。
+
+<div class="post-cta-badge">CTA: DM "AUDIT"</div><div class="post-fade"></div></div>
+                </div>
+                <button class="post-toggle" onclick="togglePost('post4', this)">展开全文 ↓</button>
+                <div class="post-footer">
+                    <div class="post-action">👍 Like</div>
+                    <div class="post-action">💬 Comment</div>
+                    <div class="post-action">🔄 Repost</div>
+                    <div class="post-action">📤 Send</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- POST 5 -->
+        <div class="post-item" data-pillar="geo">
+            <div class="post-dot"></div>
+            <div class="post-meta">
+                <span class="post-day">Day 6</span>
+                <span class="post-pillar">📍 Geographic Advantage</span>
+                <span class="post-type">Comprehensive Value Prop</span>
+            </div>
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="post-avatar">LS</div>
+                    <div>
+                        <div class="post-author-name">Logistar Founder</div>
+                        <div class="post-author-title">CEO @ Logistar · Shopify 3PL · New Brunswick, NJ</div>
+                    </div>
+                    <div class="post-platform">LinkedIn</div>
+                </div>
+                <div class="post-body">
+                    <div class="post-content" id="post5">从新泽西发货，1-2天ground触达1亿消费者。这句话背后的数学。
+
+当我们说"地理优势"的时候，我不是在说一个marketing tagline。我在说三层具体的、可量化的、直接影响你P&L的经济杠杆。
+
+第一层：港口距离。如果你的商品从海外进口，纽约/新泽西港是东海岸最大的集装箱港口，全美第二。Bayonne大桥扩建后能停靠超大型新一代集装箱船。从船上卸货到上你的仓库货架，时间是内陆竞争对手的几分之一。这意味着你的资金不会被冻结在transit里——capital velocity提升，cash flow更健康。
+
+第二层：消费者密度。新泽西New Brunswick，NJ Turnpike Exit 9旁。Ground shipping 1-2天覆盖纽约、波士顿、费城、巴尔的摩、华盛顿DC。这是全美最密集、最高消费力的市场带。你不需要花expedited air shipping的钱就能在checkout页面显示"明天到货"——而我们的数据和行业测试一致表明，显示"5-7个工作日"的checkout页面，购物车放弃率比显示"明天到达"高出20%以上。
+
+第三层：Zone经济学。从NJ发到整个东海岸走廊，Zone 1-3。同样的包裹从西海岸发，Zone 7-8，运费贵40%-60%。月发4000单，zone savings一年下来是一笔能改变增长轨迹的数字。
+
+FedEx Enterprise Partner。99.98%订单准确率（5,000,000+包裹验证）。Sub-48小时dock-to-stock。Real-time Shopify双向同步。
+
+不是每个品牌都需要新泽西。但如果你的客户集中在东海岸，你目前不从东海岸发货，你每天都在多付一笔本可以避免的运费税。
+
+想量化这笔差异？留言你当前的发货城市和月均单量，我帮你跑一下数字。或者直接DM预约一个15分钟的discovery call。
+
+<div class="post-cta-badge">CTA: 留言发货城市 / DM预约Discovery Call</div><div class="post-fade"></div></div>
+                </div>
+                <button class="post-toggle" onclick="togglePost('post5', this)">展开全文 ↓</button>
+                <div class="post-footer">
+                    <div class="post-action">👍 Like</div>
+                    <div class="post-action">💬 Comment</div>
+                    <div class="post-action">🔄 Repost</div>
+                    <div class="post-action">📤 Send</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- POST 6 -->
+        <div class="post-item" data-pillar="conversion">
+            <div class="post-dot"></div>
+            <div class="post-meta">
+                <span class="post-day">Day 8</span>
+                <span class="post-pillar">🎯 Conversion</span>
+                <span class="post-type">Direct CTA</span>
+            </div>
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="post-avatar">LS</div>
+                    <div>
+                        <div class="post-author-name">Logistar Founder</div>
+                        <div class="post-author-title">CEO @ Logistar · Shopify 3PL · New Brunswick, NJ</div>
+                    </div>
+                    <div class="post-platform">LinkedIn</div>
+                </div>
+                <div class="post-body">
+                    <div class="post-content" id="post6">给月发1,000-5,000单的Shopify品牌一个免费提议：
+
+把你最近一个月的3PL发票发给我们，我们48小时内给你一份逐行诊断报告。
+
+不是一个泛泛的"省钱评估"。是你的发票，你的数据，一行一行地拆开看：哪些是你签约时被告知的费用，哪些是后来"长出来的"，你每单的真实landed cost是多少，和transparent pricing model对比差多少。
+
+我们做这件事是因为：经过上百次审计，我们发现mid-market Shopify品牌的实际每单成本几乎总是比quoted rate高40%-90%。大部分品牌创始人和运营负责人在看到逐行拆解之前，不知道自己在为什么买单。
+
+这份报告是免费的。没有附加条件。如果看完之后你觉得现有partner其实挺好的——那也很好，至少你有了数据支撑的信心。如果你发现确实在多付钱，我们可以聊聊替代方案，也可以不聊。
+
+怎么开始：DM我 "AUDIT"，我们会发给你一个简单的intake form。
+
+⏱️ 48小时出报告。零销售压力。纯数据。
+
+<div class="post-cta-badge">CTA: DM "AUDIT" → 48小时出报告 · 零销售压力</div><div class="post-fade"></div></div>
+                </div>
+                <button class="post-toggle" onclick="togglePost('post6', this)">展开全文 ↓</button>
+                <div class="post-footer">
+                    <div class="post-action">👍 Like</div>
+                    <div class="post-action">💬 Comment</div>
+                    <div class="post-action">🔄 Repost</div>
+                    <div class="post-action">📤 Send</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- POST 7 -->
+        <div class="post-item" data-pillar="conversion">
+            <div class="post-dot"></div>
+            <div class="post-meta">
+                <span class="post-day">Day 9</span>
+                <span class="post-pillar">🎯 Conversion</span>
+                <span class="post-type">PDF Carousel</span>
+            </div>
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="post-avatar">LS</div>
+                    <div>
+                        <div class="post-author-name">Logistar Founder</div>
+                        <div class="post-author-title">CEO @ Logistar · Shopify 3PL · New Brunswick, NJ</div>
+                    </div>
+                    <div class="post-platform">LinkedIn</div>
+                </div>
+                <div class="post-body">
+                    <div class="post-content" id="post7">📊 [CAROUSEL] 你的3PL发票里藏着什么？15行隐藏费用 vs 透明定价的真实对比
+
+我把一张典型的mid-market 3PL月度发票和一张transparent pricing model的发票放在了一起做了个对比。
+
+—— Carousel Slides ——
+
+Slide 1: 封面——"你的$3.50/单报价的真实成本"
+
+Slide 2: 一张"典型"3PL发票——base pick & pack, dimensional weight adj., multi-unit escalation, API sync fee, label generation fee, packaging material surcharge, zone fuel surcharge, residential delivery surcharge, long-term storage, returns processing, restocking inspection, minimum monthly volume fee, peak season surcharge, account management fee, invoice processing fee——15行。原本$14,000的预算变成了$22,400。
+
+Slide 3: 每行费用的拆解和解释——你在为什么付钱？
+
+Slide 4: 这些费用是怎么"出现"的——合同签约时不提→前几个月不收或少收→第3-6个月开始逐步叠加→你发现时已经迁移成本太高
+
+Slide 5: Transparent pricing model——清晰的pick-and-pack费率、存储费率、运费——没有附加行项目
+
+Slide 6: 总成本对比：同样4000单/月，传统模型 $22,400 vs 透明模型的显著差异
+
+Slide 7: CTA——"想知道你的发票里藏了多少？DM 'AUDIT'——48小时免费逐行诊断"
+
+👆 左右滑动查看完整对比。如果你管理一个Shopify品牌的物流，把这个转发给你的finance team。
+
+<div class="post-cta-badge">CTA: DM "AUDIT" + 转发给Finance Team</div><div class="post-fade"></div></div>
+                </div>
+                <button class="post-toggle" onclick="togglePost('post7', this)">展开全文 ↓</button>
+                <div class="post-footer">
+                    <div class="post-action">👍 Like</div>
+                    <div class="post-action">💬 Comment</div>
+                    <div class="post-action">🔄 Repost</div>
+                    <div class="post-action">📤 Send</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- CONVERSION FUNNEL -->
+<section id="funnel">
+    <div class="section-label">Lead Capture & Conversion</div>
+    <h2 class="section-title">MVP转化漏斗</h2>
+    <p class="section-desc">从内容消费到合格询盘的最短路径——MVP阶段仅保留2个转化机制。</p>
+
+    <div class="flow-steps">
+        <div class="flow-step">
+            <div class="step-num">1</div>
+            <h4>内容触达</h4>
+            <p>LinkedIn帖子出现在ICP的feed中，hook line在"see more"折叠前抓住注意力</p>
+        </div>
+        <div class="flow-step">
+            <div class="step-num">2</div>
+            <h4>痛点共鸣</h4>
+            <p>数据和叙事验证目标受众已有但未能清晰表达的运营痛苦</p>
+        </div>
+        <div class="flow-step">
+            <div class="step-num">3</div>
+            <h4>DM "AUDIT"</h4>
+            <p>最低摩擦的行动——打一个关键词即可启动对话，触发intake form</p>
+        </div>
+        <div class="flow-step">
+            <div class="step-num">4</div>
+            <h4>48小时诊断</h4>
+            <p>Logistar团队逐行分析发票，产出branded PDF对比报告</p>
+        </div>
+        <div class="flow-step">
+            <div class="step-num">5</div>
+            <h4>Discovery Call</h4>
+            <p>基于审计报告的数据，从demonstrated competence的位置发起商业对话</p>
+        </div>
+    </div>
+
+    <div style="margin-top:3rem; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:2rem;">
+        <h3 style="font-size:1.1rem; margin-bottom:1rem;">Follow-Up SLA（跟进时效）</h3>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:1rem;">
+            <div style="padding:1rem; background:var(--surface-light); border-radius:10px;">
+                <div style="font-size:1.5rem; font-weight:800; color:var(--accent);">2h</div>
+                <div style="font-size:0.82rem; color:var(--text-muted);">DM询盘个性化回复</div>
+            </div>
+            <div style="padding:1rem; background:var(--surface-light); border-radius:10px;">
+                <div style="font-size:1.5rem; font-weight:800; color:var(--warning);">48h</div>
+                <div style="font-size:0.82rem; color:var(--text-muted);">发票审计报告交付</div>
+            </div>
+            <div style="padding:1rem; background:var(--surface-light); border-radius:10px;">
+                <div style="font-size:1.5rem; font-weight:800; color:var(--accent);">60min</div>
+                <div style="font-size:0.82rem; color:var(--text-muted);">LinkedIn评论回复窗口</div>
+            </div>
+            <div style="padding:1rem; background:var(--surface-light); border-radius:10px;">
+                <div style="font-size:1.5rem; font-weight:800; color:var(--danger);">7d</div>
+                <div style="font-size:0.82rem; color:var(--text-muted);">未转化线索进入nurture序列</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- EXECUTION CHECKLIST -->
+<section>
+    <div class="section-label">Execution</div>
+    <h2 class="section-title">10天执行Checklist</h2>
+    <p class="section-desc">MVP落地的每日行动清单。</p>
+
+    <div style="display:grid; gap:0.75rem;">
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.25rem; display:flex; align-items:flex-start; gap:1rem;">
+            <div style="background:rgba(0,212,170,0.12); color:var(--accent); padding:4px 10px; border-radius:6px; font-size:0.8rem; font-weight:700; white-space:nowrap;">Day 1-2</div>
+            <div>
+                <div style="font-weight:700; font-size:0.95rem; margin-bottom:0.25rem;">基础设施搭建</div>
+                <div style="font-size:0.85rem; color:var(--text-muted);">创始人LinkedIn资料改造 → CRM线索标签设置 → Calendly链接配置 → "DM AUDIT"回复模板 + Google Form intake → 发票审计报告PDF模板</div>
+            </div>
+        </div>
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.25rem; display:flex; align-items:flex-start; gap:1rem;">
+            <div style="background:rgba(255,192,72,0.12); color:var(--warning); padding:4px 10px; border-radius:6px; font-size:0.8rem; font-weight:700; white-space:nowrap;">Day 3-4</div>
+            <div>
+                <div style="font-weight:700; font-size:0.95rem; margin-bottom:0.25rem;">内容生产冲刺</div>
+                <div style="font-size:0.85rem; color:var(--text-muted);">7篇帖子终稿定稿 → Zone热力图设计 → Carousel PDF制作（7页）→ 创始人审批 → 运营团队数据准确性校验 → 排入LinkedIn原生排程</div>
+            </div>
+        </div>
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.25rem; display:flex; align-items:flex-start; gap:1rem;">
+            <div style="background:rgba(0,212,170,0.12); color:var(--accent); padding:4px 10px; border-radius:6px; font-size:0.8rem; font-weight:700; white-space:nowrap;">Day 5-9</div>
+            <div>
+                <div style="font-weight:700; font-size:0.95rem; margin-bottom:0.25rem;">发布 + 互动 + 收集数据</div>
+                <div style="font-size:0.85rem; color:var(--text-muted);">每工作日1篇，7:30-8:30 AM ET发布 → 发布后60分钟内创始人回复评论 → 每天20分钟主动互动ICP帖子 → DM询盘2小时内响应 → 每日记录impressions/engagement/inquiries</div>
+            </div>
+        </div>
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.25rem; display:flex; align-items:flex-start; gap:1rem;">
+            <div style="background:rgba(255,107,107,0.12); color:var(--danger); padding:4px 10px; border-radius:6px; font-size:0.8rem; font-weight:700; white-space:nowrap;">Day 10</div>
+            <div>
+                <div style="font-weight:700; font-size:0.95rem; margin-bottom:0.25rem;">MVP Review & Go/No-Go Decision</div>
+                <div style="font-size:0.85rem; color:var(--text-muted);">评估3个核心指标 → 识别最优支柱和CTA → 如果验证成功：启动完整30天日历 + X平台扩展 → 如果未达标：调整hook角度/受众定位后再跑7天</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <p style="margin-bottom:0.5rem;"><strong style="color:var(--text);">LOGI<span style="color:var(--accent);">STAR</span></strong> Social Campaign MVP — Content Command Center</p>
+    <p>Built from PRD v1.0 · 7 Posts · 2 Pillars · 10-Day Sprint</p>
+    <p style="margin-top:0.75rem;">520 Jersey Ave, New Brunswick, NJ 08901 · <a href="https://logistarusa.com">logistarusa.com</a></p>
+</footer>
+
+<script>
+    // Toggle post content expansion
+    function togglePost(id, btn) {
+        const el = document.getElementById(id);
+        el.classList.toggle('expanded');
+        btn.textContent = el.classList.contains('expanded') ? '收起 ↑' : '展开全文 ↓';
+    }
+
+    // Tab filtering
+    function showTab(filter) {
+        // Update buttons
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+
+        // Filter posts
+        document.querySelectorAll('.post-item').forEach(item => {
+            if (filter === 'all') {
+                item.style.display = '';
+            } else {
+                const pillar = item.getAttribute('data-pillar');
+                item.style.display = pillar === filter ? '' : 'none';
+            }
+        });
+    }
+
+    // Smooth scroll for nav links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
